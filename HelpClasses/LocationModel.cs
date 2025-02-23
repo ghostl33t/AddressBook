@@ -9,4 +9,5 @@ public class LocationModel
     [Required]
     [Column(TypeName = "nvarchar(255)")]
     public string Name { get; set; } = string.Empty;
+    public DateTime CreatedOn = DateTime.Now;
 }

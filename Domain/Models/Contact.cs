@@ -30,4 +30,7 @@ public class Contact
     [Required]
     [Column(TypeName = "date")]
     public DateOnly BirthDate { get; set; }
+
+    [Column(TypeName = "datetime")]
+    public DateTime CreatedOn { get; set; } = DateTime.Now;
 }

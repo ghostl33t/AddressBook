@@ -1,5 +1,6 @@
-﻿using AddressBook.Repositories;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using AddressBook.Application.Contacts;
 
 namespace AddressBook.Controllers
 {
@@ -7,18 +8,17 @@ namespace AddressBook.Controllers
     [ApiController]
     public class ContactController : ControllerBase
     {
-        private readonly IContactRepository _contactRepository;
+        private readonly IMediator _mediator;
 
-        public ContactController(IContactRepository contactRepository)
+        public ContactController(IMediator mediator)
         {
-            _contactRepository = contactRepository;
+            _mediator = mediator;
         }
 
-        // GET: api/contact
         [HttpGet("all")]
         public async Task<IActionResult> GetAllContacts()
         {
-            var contacts = await _contactRepository.GetAllContactsAsync();
+            var contacts = await _mediator.Send(new GetContactsQuery());
             return Ok(contacts);
         }
     }

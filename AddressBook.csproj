@@ -17,8 +17,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Contacts\" />
-  </ItemGroup>
-
 </Project>
