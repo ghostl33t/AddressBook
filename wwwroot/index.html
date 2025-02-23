@@ -73,7 +73,7 @@
                         </div>
                         <div class="form-group">
                             <label for="phoneNumber">Phone Number:</label>
-                            <input type="text" class="form-control" id="phoneNumber" required>
+                            <input type="text" class="form-control" id="phoneNumber" maxlength="11" required>
                         </div>
                         <div class="form-group">
                             <label for="gender">Gender:</label>
@@ -192,6 +192,69 @@
             } catch (error) {
                 console.error("Error fetching cities:", error);
             }
+        }
+
+        function resetContactForm() {
+            document.getElementById("contactForm").reset();
+        }
+        $('#addContactModal').on('hidden.bs.modal', function () {
+            resetContactForm();
+        });
+
+        document.getElementById("phoneNumber").addEventListener("input", function (event) {
+            let value = event.target.value.replace(/\D/g, "");
+
+            if (value.length <= 3) {
+                value = value.replace(/(\d{0,3})/, "$1");
+            } else if (value.length <= 6) {
+                value = value.replace(/(\d{3})(\d{0,3})/, "$1/$2");
+            } else {
+                value = value.replace(/(\d{3})(\d{3})(\d{0,3})/, "$1/$2-$3");
+            }
+
+            event.target.value = value;
+        });
+
+        function saveContact() {
+            const newContact = {
+                firstName: document.getElementById("firstName").value,
+                lastName: document.getElementById("lastName").value,
+                phoneNumber: document.getElementById("phoneNumber").value,
+                gender: document.getElementById("gender").value === "Male" ? 0 : 1,
+                emailAddress: document.getElementById("email").value,
+                cityId: parseInt(document.getElementById("city").value),
+                birthDate: document.getElementById("birthDate").value
+            };
+
+            console.log(JSON.stringify(newContact));
+
+            if (!newContact.firstName || !newContact.lastName || !newContact.phoneNumber || !newContact.emailAddress || !newContact.cityId || !newContact.birthDate) {
+                alert("All fields are required.");
+                return;
+            }
+
+            fetch('http://localhost:5293/api/contact/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newContact)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            alert("Error: " + errorData.message);
+                        });
+                    }
+                })
+                .then(data => {
+                    alert("Contact created successfully.");
+                    $('#addContactModal').modal('hide');
+                    fetchContacts();
+                })
+                .catch(error => {
+                    alert("Error: " + error);
+                });
         }
 
         window.onload = () => {

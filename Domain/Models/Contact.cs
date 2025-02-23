@@ -31,6 +31,11 @@ public class Contact
     [Column(TypeName = "date")]
     public DateOnly BirthDate { get; set; }
 
+    [Required]
+    [ForeignKey("City")]
+    public int CityId { get; set; }
+    public required City City { get; set; }
+
     [Column(TypeName = "datetime")]
     public DateTime CreatedOn { get; set; } = DateTime.Now;
 }

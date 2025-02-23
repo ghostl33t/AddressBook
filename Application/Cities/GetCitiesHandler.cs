@@ -23,6 +23,6 @@ public class GetCitiesHandler : IRequestHandler<GetCitiesQuery, List<CityGetDTO>
 
     public async Task<List<CityGetDTO>> Handle(GetCitiesQuery request, CancellationToken cancellationToken)
     {
-        return await _cityRepository.GetCitiesForCountry(request.CountryId);
+        return await _cityRepository.GetCitiesForCountryAsync(request.CountryId);
     }
 }

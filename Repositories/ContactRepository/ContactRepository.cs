@@ -1,4 +1,5 @@
-﻿using AddressBook.DTOs;
+﻿using AddressBook.Domain.Models;
+using AddressBook.DTOs;
 using AddressBook.HelpClasses;
 
 namespace AddressBook.Repositories.ContactRepository;
@@ -33,5 +34,22 @@ public class ContactRepository : IContactRepository
                 BirthDate = new DateOnly(1985, 10, 23)
             }
         });
+    }
+    public async Task<bool> CreateNewContactAsync(Contact newContact)
+    {
+        //add to db
+        try
+        {
+            //placeholder temp
+            var listOfContacts = new List<Contact>();
+            listOfContacts.Add(newContact);
+            return await Task.FromResult(true);
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Exception occured: {ex.ToString()}");
+            throw;
+        }
+        
     }
 }
