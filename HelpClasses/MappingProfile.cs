@@ -29,6 +29,15 @@ namespace AddressBook.HelpClasses
             CreateMap<ContactPostDTO, Contact>()
                 .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.EmailAddress))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => (Gender)src.Gender));
+
+            CreateMap<ContactPatchDTO, Contact>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => (Gender)src.Gender))
+                .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.EmailAddress))
+                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.BirthDate))
+                .ForMember(dest => dest.CityId, opt => opt.MapFrom(src => src.CityId));
         }
     }
 }

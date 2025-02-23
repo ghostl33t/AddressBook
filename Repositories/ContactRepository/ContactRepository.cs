@@ -22,6 +22,15 @@ public class ContactRepository : IContactRepository
         return _mapper.Map<List<ContactGetDTO>>(contacts);
     }
 
+    public async Task<ContactGetDTO> GetContactByIdAsync(int contactId)
+    {
+        var contact = await _dbContext.Contacts.Include(x => x.City).FirstAsync(x => x.Id == contactId);
+        var contactDto = _mapper.Map<ContactGetDTO>(contact);
+        contactDto.CountryId = contact.City.CountryId;
+
+        return contactDto;
+    }
+
     public async Task<bool> CreateNewContactAsync(Contact newContact)
     {
         try
@@ -34,6 +43,28 @@ public class ContactRepository : IContactRepository
         catch(Exception ex)
         {
             Console.WriteLine($"Insert Failed - Exception occured: {ex.ToString()}");
+            throw;
+        }
+    }
+
+    public async Task<bool> UpdateContactAsync(ContactPatchDTO contactPatch)
+    {
+        try
+        {
+            var contact = await _dbContext.Contacts.FirstOrDefaultAsync(x => x.Id == contactPatch.ContactId);
+
+            if (contact == null)
+                return false;
+
+            _mapper.Map(contactPatch, contact);
+            _dbContext.Contacts.Update(contact);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Update Failed - Exception occured: {ex.ToString()}");
             throw;
         }
     }

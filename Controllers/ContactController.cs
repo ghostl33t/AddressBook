@@ -24,6 +24,17 @@ namespace AddressBook.Controllers
             return Ok(contacts);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetContactById(int id)
+        {
+            var contact = await _mediator.Send(new GetContactByIdQuery(id));
+            if (contact == null)
+            {
+                return NotFound();
+            }
+            return Ok(contact);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateNewContact(ContactPostDTO newContact)
         {
@@ -40,6 +51,27 @@ namespace AddressBook.Controllers
             await _mediator.Send(command);
 
             return Ok();
+        }
+
+        [HttpPatch("update")]
+        public async Task<IActionResult> UpdateContact([FromBody]ContactPatchDTO contactPatch)
+        {
+            var emailPattern = @"^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$";
+            var phonePattern = @"^\d{3}/\d{3}-\d{3}$";
+
+            if (!Regex.IsMatch(contactPatch.EmailAddress, emailPattern))
+                return BadRequest("Invalid email format.");
+
+            if (!Regex.IsMatch(contactPatch.PhoneNumber, phonePattern))
+                return BadRequest("Invalid phone number format.");
+
+            var command = new UpdateContactCommand(contactPatch);
+            var result = await _mediator.Send(command);
+
+            if (result)
+                return Ok(new { message = "Contact updated successfully." });
+
+            return NotFound(new { message = "Contact not found." });
         }
 
         [HttpDelete("{contactId}")]

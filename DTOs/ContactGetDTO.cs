@@ -11,4 +11,7 @@ public class ContactGetDTO
     public string CityName { get; set; } = string.Empty;
     public DateOnly BirthDate { get; set; }
     public int Age => DateTime.Now.Year - BirthDate.Year;
+
+    public int CountryId { get; set; }
+    public int CityId { get; set; }
 }

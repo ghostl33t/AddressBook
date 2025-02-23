@@ -7,30 +7,130 @@
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+
+        /* Style for the "Add New Contact" Section */
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Style for the "Add New Contact" button */
+        button.btn-primary {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px; /* Space below the button */
+        }
+
+            button.btn-primary:hover {
+                background-color: #45a049;
+            }
+
+            button.btn-primary:active {
+                background-color: #388e3c;
+            }
+
+        /* Remove default button outline on focus */
+        button:focus {
+            outline: none;
+        }
+
+        /* General Table Styles */
         table {
             width: 100%;
             border-collapse: collapse;
+            margin: 20px 0;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         table, th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
 
         th, td {
-            padding: 8px;
+            padding: 12px;
             text-align: left;
         }
+
+        /* Table Header Styling */
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Gender Circle Styling */
         .gender-circle {
             display: inline-block;
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background-color: blue;
         }
 
-        /* Modal styles */
-        .modal {
-            display: none;
+        /* Table Row Styling */
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        /* Button Styling */
+        button {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            /* Edit Button (Green) */
+            button:hover {
+                background-color: #45a049;
+            }
+
+            button:active {
+                background-color: #388e3c;
+            }
+
+            button.edit-btn {
+                background-color: #4CAF50;
+                color: white;
+            }
+
+                button.edit-btn:hover {
+                    background-color: #45a049;
+                }
+
+            /* Delete Button (Red) */
+            button.delete-btn {
+                background-color: #f44336;
+                color: white;
+            }
+
+                button.delete-btn:hover {
+                    background-color: #e53935;
+                }
+
+            /* Remove the default button outline on focus */
+            button:focus {
+                outline: none;
+            }
+
+        /* Delete Modal Styles */
+        #deleteModal {
+            display: none; /* Hide modal by default */
             position: fixed;
             z-index: 1;
             left: 0;
@@ -39,35 +139,75 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             overflow: auto;
+            padding-top: 50px;
         }
 
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 50%;
-        }
+            #deleteModal .modal-content {
+                background-color: #fefefe;
+                margin: 5% auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 50%;
+                border-radius: 10px;
+                text-align: center;
+            }
 
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
+            #deleteModal h3 {
+                font-size: 24px;
+                color: #333;
+            }
 
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+            #deleteModal #contactName,
+            #deleteModal #contactPhoneNumber {
+                font-size: 18px;
+                color: #555;
+                margin: 10px 0;
+            }
 
+            #deleteModal button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                font-size: 16px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                margin: 10px 5px;
+            }
+
+                #deleteModal button:hover {
+                    background-color: #45a049;
+                }
+
+            #deleteModal #confirmDeleteBtn {
+                background-color: #d9534f;
+            }
+
+                #deleteModal #confirmDeleteBtn:hover {
+                    background-color: #c9302c;
+                }
+
+            #deleteModal .close {
+                color: #aaa;
+                font-size: 28px;
+                font-weight: bold;
+                position: absolute;
+                right: 20px;
+                top: 10px;
+                cursor: pointer;
+            }
+
+                #deleteModal .close:hover,
+                #deleteModal .close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
     </style>
 </head>
 <body>
-    <h2>Add New Contact</h2>
-
+    <h2>Address Book</h2>
+    <br />
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addContactModal">
         Add New Contact
     </button>
@@ -93,13 +233,13 @@
         </tbody>
     </table>
 
-    <!-- Modal for adding new contact -->
+    <!-- Edit Modal -->
     <div class="modal" id="addContactModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Add New Contact</h4>
+                    <h4 class="modal-title" id="modalTitle">Add New Contact</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
@@ -175,6 +315,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
+        let currentContactId = null;
+
         async function fetchContacts() {
             try {
                 const response = await fetch('http://localhost:5293/api/contact/all');
@@ -201,10 +343,10 @@
                                 <td>${contact.birthDate}</td>
                                 <td>${contact.age}</td>
                                 <td>
-                                    <button onclick="editContact(${contact.id})">Edit</button>
-                                    <button onclick="showDeleteModal(${contact.id}, '${contact.firstName}', '${contact.lastName}', '${contact.phoneNumber}')">Delete</button>
+                                    <button class="edit-btn" onclick="editContact(${contact.id})">Edit</button>
+                                    <button class="delete-btn" onclick="showDeleteModal(${contact.id}, '${contact.firstName}', '${contact.lastName}', '${contact.phoneNumber}')">Delete</button>
                                 </td>
-                                `;
+                        `;
                 });
             } catch (error) {
                 console.error("Error fetching contacts:", error);
@@ -229,7 +371,7 @@
             }
         }
 
-        async function fetchCitiesForCountry() {
+        async function fetchCitiesForCountry(selectedCityId = null) {
             const countryId = document.getElementById('country').value;
 
             if (!countryId) {
@@ -248,6 +390,11 @@
                     option.textContent = city.cityName;
                     citySelect.appendChild(option);
                 });
+
+                if (selectedCityId) {
+                    document.getElementById("city").value = selectedCityId;
+                }
+
             } catch (error) {
                 console.error("Error fetching cities:", error);
             }
@@ -284,16 +431,27 @@
                 cityId: parseInt(document.getElementById("city").value),
                 birthDate: document.getElementById("birthDate").value
             };
-
-            console.log(JSON.stringify(newContact));
+            
 
             if (!newContact.firstName || !newContact.lastName || !newContact.phoneNumber || !newContact.emailAddress || !newContact.cityId || !newContact.birthDate) {
                 alert("All fields are required.");
                 return;
             }
 
-            fetch('http://localhost:5293/api/contact/create', {
-                method: 'POST',
+            let requestUrl = 'http://localhost:5293/api/contact/create';
+            let method = 'POST';
+
+            console.log(currentContactId);
+            if (currentContactId != null) {
+                newContact.contactId = currentContactId;
+                requestUrl = `http://localhost:5293/api/contact/update`;
+                method = 'PATCH';
+            }
+
+            console.log(requestUrl);
+
+            fetch(requestUrl, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -302,14 +460,16 @@
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(errorData => {
-                            alert("Error: " + errorData.message);
+                            alert("Update Error: " + errorData.message);
                         });
                     }
                 })
                 .then(data => {
-                    alert("Contact created successfully.");
+                    const successMessage = currentContactId != null ? "Contact updated successfully." : "Contact created successfully.";
+                    alert(successMessage);
                     $('#addContactModal').modal('hide');
                     fetchContacts();
+                    currentContactId = null;
                 })
                 .catch(error => {
                     alert("Error: " + error);
@@ -354,6 +514,27 @@
             } catch (error) {
                 console.error("Error deleting contact:", error);
             }
+        }
+
+        function editContact(contactId) {
+            currentContactId = contactId;
+            fetch(`http://localhost:5293/api/contact/${contactId}`)
+                .then(response => response.json())
+                .then(contact => {
+                    document.getElementById("firstName").value = contact.firstName;
+                    document.getElementById("lastName").value = contact.lastName;
+                    document.getElementById("phoneNumber").value = contact.phoneNumber;
+                    document.getElementById("gender").value = contact.gender;
+                    document.getElementById("email").value = contact.email;
+                    document.getElementById("country").value = contact.countryId;
+                    fetchCitiesForCountry(contact.cityId);
+                    document.getElementById("birthDate").value = contact.birthDate.split('T')[0];
+
+                    $('#addContactModal').modal('show');
+                })
+                .catch(error => {
+                    console.error("Error fetching contact details:", error);
+                });
         }
 
         window.onload = () => {
