@@ -216,7 +216,7 @@
     <table id="contactTable">
         <thead>
             <tr>
-                <th>ID</th>
+                <th hidden="hidden">ID</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Phone Number</th>
@@ -460,7 +460,8 @@
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(errorData => {
-                            alert("Update Error: " + errorData.message);
+                            alert("Error: " + (errorData.message || errorData.errors || "Unknown error"));
+                            throw new Error("Request failed");
                         });
                     }
                 })
@@ -471,9 +472,6 @@
                     fetchContacts();
                     currentContactId = null;
                 })
-                .catch(error => {
-                    alert("Error: " + error);
-                });
         }
 
         let contactIdToDelete = null;

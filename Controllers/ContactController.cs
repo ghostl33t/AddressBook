@@ -42,10 +42,10 @@ namespace AddressBook.Controllers
             var phonePattern = @"^\d{3}/\d{3}-\d{3}$";
 
             if (!Regex.IsMatch(newContact.EmailAddress, emailPattern))
-                return BadRequest("Invalid email format.");
+                return BadRequest(new { message = "Invalid email format." });
 
             if (!Regex.IsMatch(newContact.PhoneNumber, phonePattern))
-                return BadRequest("Invalid phone number format.");
+                return BadRequest(new { message = "Bad phone number format." });
 
             var command = new CreateContactCommand(newContact);
             await _mediator.Send(command);
@@ -60,10 +60,10 @@ namespace AddressBook.Controllers
             var phonePattern = @"^\d{3}/\d{3}-\d{3}$";
 
             if (!Regex.IsMatch(contactPatch.EmailAddress, emailPattern))
-                return BadRequest("Invalid email format.");
+                return BadRequest(new { message = "Invalid email format." });
 
             if (!Regex.IsMatch(contactPatch.PhoneNumber, phonePattern))
-                return BadRequest("Invalid phone number format.");
+                return BadRequest(new { message = "Bad phone number format." });
 
             var command = new UpdateContactCommand(contactPatch);
             var result = await _mediator.Send(command);
