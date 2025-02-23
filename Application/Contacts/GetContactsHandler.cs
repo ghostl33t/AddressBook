@@ -1,5 +1,5 @@
 ﻿using AddressBook.DTOs;
-using AddressBook.Repositories;
+using AddressBook.Repositories.ContactRepository;
 using MediatR;
 
 namespace AddressBook.Application.Contacts;

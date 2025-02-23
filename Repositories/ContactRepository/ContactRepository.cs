@@ -1,7 +1,7 @@
 ﻿using AddressBook.DTOs;
 using AddressBook.HelpClasses;
 
-namespace AddressBook.Repositories;
+namespace AddressBook.Repositories.ContactRepository;
 public class ContactRepository : IContactRepository
 {
     public async Task<List<ContactGetDTO>> GetAllContactsAsync()
