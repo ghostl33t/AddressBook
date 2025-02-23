@@ -1,48 +1,31 @@
-﻿using AddressBook.Domain.Models;
+﻿using AddressBook.Domain;
+using AddressBook.Domain.Models;
 using AddressBook.DTOs;
-using AddressBook.HelpClasses;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace AddressBook.Repositories.ContactRepository;
 public class ContactRepository : IContactRepository
 {
+    private readonly ApplicationDbContext _dbContext;
+    private readonly IMapper _mapper;
+    public ContactRepository(ApplicationDbContext dbContext, IMapper mapper)
+    {
+        _dbContext = dbContext;
+        _mapper = mapper;
+    }
     public async Task<List<ContactGetDTO>> GetAllContactsAsync()
     {
-        return await Task.FromResult(new List<ContactGetDTO>
-        {
-            new ContactGetDTO
-            {
-                Id = 1,
-                FirstName = "Marko",
-                LastName = "Marković",
-                PhoneNumber = "061-123-456",
-                Gender = Gender.Male,
-                Email = "marko@example.com",
-                CountryName = "Bosna i Hercegovina",
-                CityName = "Sarajevo",
-                BirthDate = new DateOnly(1990, 5, 15)
-            },
-            new ContactGetDTO
-            {
-                Id = 2,
-                FirstName = "Ana",
-                LastName = "Anić",
-                PhoneNumber = "062-987-654",
-                Gender = Gender.Female,
-                Email = "ana@example.com",
-                CountryName = "Srbija",
-                CityName = "Beograd",
-                BirthDate = new DateOnly(1985, 10, 23)
-            }
-        });
+        var contacts = await _dbContext.Contacts.Include(x => x.City).Include(x => x.City.Country).ToListAsync();
+
+        return _mapper.Map<List<ContactGetDTO>>(contacts);
     }
     public async Task<bool> CreateNewContactAsync(Contact newContact)
     {
-        //add to db
         try
         {
-            //placeholder temp
-            var listOfContacts = new List<Contact>();
-            listOfContacts.Add(newContact);
+            _dbContext.Contacts.Add(newContact);
+            await _dbContext.SaveChangesAsync();
             return await Task.FromResult(true);
         }
         catch(Exception ex)

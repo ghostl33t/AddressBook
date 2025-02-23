@@ -1,16 +1,24 @@
-﻿using AddressBook.DTOs;
+﻿using AddressBook.Domain;
+using AddressBook.DTOs;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace AddressBook.Repositories.CountryRepository;
 public class CountryRepository : ICountryRepository
 {
+    private readonly ApplicationDbContext _dbContext;
+    private readonly IMapper _mapper;
+    public CountryRepository(ApplicationDbContext dbContext, IMapper mapper)
+    {
+        _dbContext = dbContext;
+        _mapper = mapper;
+    }
     public async Task<List<CountryGetDTO>> GetAllCountriesAsync()
     {
-        return await Task.FromResult(new List<CountryGetDTO>
-        {
-            new CountryGetDTO { CountryId = 1, CountryName = "Serbia" },
-            new CountryGetDTO { CountryId = 2, CountryName = "Croatia" },
-            new CountryGetDTO { CountryId = 3, CountryName = "Bosnia and Herzegovina" },
-            new CountryGetDTO { CountryId = 4, CountryName = "Montenegro" }
-        });
+        var countries = await _dbContext.Countries
+            .AsNoTracking()
+            .ToListAsync();
+
+        return _mapper.Map<List<CountryGetDTO>>(countries);
     }
 }
