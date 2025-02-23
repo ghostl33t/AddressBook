@@ -46,7 +46,7 @@ namespace AddressBook.Controllers
             {
                 var errMessage = "";
                 foreach (var error in validationResult.Errors)
-                    errMessage += $"Error: {error.ErrorMessage}\n!";
+                    errMessage += $"Error: {error.ErrorMessage}!\n";
 
                 return BadRequest(new { message = errMessage });
             }
@@ -65,7 +65,7 @@ namespace AddressBook.Controllers
             {
                 var errMessage = "";
                 foreach (var error in validationResult.Errors)
-                    errMessage += $"Error: {error.ErrorMessage}\n!";
+                    errMessage += $"Error: {error.ErrorMessage}!\n";
 
                 return BadRequest(new { message = errMessage });
             }
