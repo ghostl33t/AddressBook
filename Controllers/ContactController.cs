@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using AddressBook.Application.Contacts;
 using AddressBook.DTOs;
-using System.Text.RegularExpressions;
+using FluentValidation;
 
 namespace AddressBook.Controllers
 {
@@ -11,10 +11,13 @@ namespace AddressBook.Controllers
     public class ContactController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public ContactController(IMediator mediator)
+        private readonly IValidator<ContactPostDTO> _postValidator;
+        private readonly IValidator<ContactPatchDTO> _patchValidator;
+        public ContactController(IMediator mediator, IValidator<ContactPostDTO> postValidator, IValidator<ContactPatchDTO> patchValidator)
         {
             _mediator = mediator;
+            _postValidator = postValidator;
+            _patchValidator = patchValidator;
         }
 
         [HttpGet("all")]
@@ -38,14 +41,15 @@ namespace AddressBook.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateNewContact(ContactPostDTO newContact)
         {
-            var emailPattern = @"^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$";
-            var phonePattern = @"^\d{3}/\d{3}-\d{3}$";
+            var validationResult = await _postValidator.ValidateAsync(newContact);
+            if (!validationResult.IsValid)
+            {
+                var errMessage = "";
+                foreach (var error in validationResult.Errors)
+                    errMessage += $"Error: {error.ErrorMessage}\n!";
 
-            if (!Regex.IsMatch(newContact.EmailAddress, emailPattern))
-                return BadRequest(new { message = "Invalid email format." });
-
-            if (!Regex.IsMatch(newContact.PhoneNumber, phonePattern))
-                return BadRequest(new { message = "Bad phone number format." });
+                return BadRequest(new { message = errMessage });
+            }
 
             var command = new CreateContactCommand(newContact);
             await _mediator.Send(command);
@@ -56,14 +60,15 @@ namespace AddressBook.Controllers
         [HttpPatch("update")]
         public async Task<IActionResult> UpdateContact([FromBody]ContactPatchDTO contactPatch)
         {
-            var emailPattern = @"^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$";
-            var phonePattern = @"^\d{3}/\d{3}-\d{3}$";
+            var validationResult = await _patchValidator.ValidateAsync(contactPatch);
+            if (!validationResult.IsValid)
+            {
+                var errMessage = "";
+                foreach (var error in validationResult.Errors)
+                    errMessage += $"Error: {error.ErrorMessage}\n!";
 
-            if (!Regex.IsMatch(contactPatch.EmailAddress, emailPattern))
-                return BadRequest(new { message = "Invalid email format." });
-
-            if (!Regex.IsMatch(contactPatch.PhoneNumber, phonePattern))
-                return BadRequest(new { message = "Bad phone number format." });
+                return BadRequest(new { message = errMessage });
+            }
 
             var command = new UpdateContactCommand(contactPatch);
             var result = await _mediator.Send(command);

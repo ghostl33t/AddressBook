@@ -3,6 +3,8 @@ using AddressBook.Repositories.CountryRepository;
 using AddressBook.Repositories.CityRepository;
 using Microsoft.EntityFrameworkCore;
 using AddressBook.Domain;
+using AddressBook.HelpClasses;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,9 @@ builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddValidatorsFromAssemblyContaining<ContactValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ContactPatchValidator>();
 
 builder.Services.AddCors(options =>
 {

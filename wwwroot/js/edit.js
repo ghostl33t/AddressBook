@@ -30,12 +30,6 @@ function saveContact() {
         birthDate: document.getElementById("birthDate").value
     };
 
-
-    if (!newContact.firstName || !newContact.lastName || !newContact.phoneNumber || !newContact.emailAddress || !newContact.cityId || !newContact.birthDate) {
-        alert("All fields are required.");
-        return;
-    }
-
     let requestUrl = 'http://localhost:5293/api/contact/create';
     let method = 'POST';
 
@@ -58,7 +52,8 @@ function saveContact() {
         .then(response => {
             if (!response.ok) {
                 return response.json().then(errorData => {
-                    alert("Error: " + (errorData.message || errorData.errors || "Unknown error"));
+                    alert((errorData.message || errorData.errors || "Unknown error"));
+                    currentContactId = null;
                     throw new Error("Request failed");
                 });
             }

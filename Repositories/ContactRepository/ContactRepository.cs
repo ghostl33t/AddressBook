@@ -85,4 +85,12 @@ public class ContactRepository : IContactRepository
             throw;
         }
     }
+
+    public async Task<bool> IsEmailInUse(string email) => await _dbContext.Contacts.Where(x => x.EmailAddress == email).AnyAsync();
+    public async Task<bool> IsPhoneNumberInUse(string phoneNumber) => await _dbContext.Contacts.Where(x => x.PhoneNumber == phoneNumber).AnyAsync();
+
+    public async Task<bool> IsEmailInUse(string email, int contactId) => 
+        await _dbContext.Contacts.Where(x => x.EmailAddress == email && x.Id != contactId).AnyAsync();
+    public async Task<bool> IsPhoneNumberInUse(string phoneNumber, int contactId) => 
+        await _dbContext.Contacts.Where(x => x.PhoneNumber == phoneNumber && x.Id != contactId).AnyAsync();
 }
