@@ -41,5 +41,16 @@ namespace AddressBook.Controllers
 
             return Ok();
         }
+
+        [HttpDelete("{contactId}")]
+        public async Task<IActionResult> DeleteContact(int contactId)
+        {
+            var result = await _mediator.Send(new DeleteContactCommand(contactId));
+
+            if (result)
+                return Ok(new { message = "Contact deleted successfully." });
+
+            return NotFound(new { message = "Contact not found." });
+        }
     }
 }

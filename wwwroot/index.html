@@ -20,6 +20,49 @@
             padding: 8px;
             text-align: left;
         }
+        .gender-circle {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: blue;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -114,6 +157,18 @@
         </div>
     </div>
 
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Are you sure you want to delete this contact?</h3>
+            <p id="contactName"></p>
+            <p id="contactPhoneNumber"></p>
+            <button id="confirmDeleteBtn" onclick="confirmDelete()">Yes, delete it</button>
+            <button onclick="closeModal()">Cancel</button>
+        </div>
+    </div>
+
     <!-- jQuery, Popper.js, and Bootstrap JS (make sure these are in this order) -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -131,21 +186,25 @@
                 contacts.forEach(contact => {
                     const row = tableBody.insertRow();
                     row.innerHTML = `
-                            <td>${contact.id}</td>
-                            <td>${contact.firstName}</td>
-                            <td>${contact.lastName}</td>
-                            <td>${contact.phoneNumber}</td>
-                            <td>${contact.gender}</td>
-                            <td>${contact.email}</td>
-                            <td>${contact.countryName}</td>
-                            <td>${contact.cityName}</td>
-                            <td>${contact.birthDate}</td>
-                            <td>${contact.age}</td>
-                            <td>
-                                <button onclick="editContact(${contact.id})">Edit</button>
-                                <button onclick="deleteContact(${contact.id})">Delete</button>
-                            </td>
-                            `;
+                                <td>${contact.id}</td>
+                                <td>${contact.firstName}</td>
+                                <td>${contact.lastName}</td>
+                                <td>${contact.phoneNumber}</td>
+                                <td>
+                                    <span class="gender-circle"
+                                          style="background-color: ${contact.gender === 'Male' ? 'blue' : 'red'};">
+                                    </span>
+                                </td>
+                                <td>${contact.email}</td>
+                                <td>${contact.countryName}</td>
+                                <td>${contact.cityName}</td>
+                                <td>${contact.birthDate}</td>
+                                <td>${contact.age}</td>
+                                <td>
+                                    <button onclick="editContact(${contact.id})">Edit</button>
+                                    <button onclick="showDeleteModal(${contact.id}, '${contact.firstName}', '${contact.lastName}', '${contact.phoneNumber}')">Delete</button>
+                                </td>
+                                `;
                 });
             } catch (error) {
                 console.error("Error fetching contacts:", error);
@@ -255,6 +314,46 @@
                 .catch(error => {
                     alert("Error: " + error);
                 });
+        }
+
+        let contactIdToDelete = null;
+
+        function showDeleteModal(contactId, firstName, lastName, phoneNumber) {
+            document.getElementById("contactName").innerText = `Name: ${firstName} ${lastName}`;
+            document.getElementById("contactPhoneNumber").innerText = `Phone: ${phoneNumber}`;
+
+            contactIdToDelete = contactId;
+
+            document.getElementById("deleteModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("deleteModal").style.display = "none";
+        }
+
+        async function confirmDelete() {
+            if (contactIdToDelete !== null) {
+                await deleteContact(contactIdToDelete);
+            }
+            closeModal();
+        }
+
+        async function deleteContact(contactId) {
+            try {
+                const response = await fetch(`http://localhost:5293/api/contact/${contactId}`, {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    alert('Failed to delete contact.');
+                    return;
+                }
+
+                alert('Contact deleted successfully.');
+                fetchContacts();
+            } catch (error) {
+                console.error("Error deleting contact:", error);
+            }
         }
 
         window.onload = () => {

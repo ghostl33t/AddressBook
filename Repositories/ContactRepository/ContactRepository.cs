@@ -14,25 +14,44 @@ public class ContactRepository : IContactRepository
         _dbContext = dbContext;
         _mapper = mapper;
     }
+
     public async Task<List<ContactGetDTO>> GetAllContactsAsync()
     {
         var contacts = await _dbContext.Contacts.Include(x => x.City).Include(x => x.City.Country).ToListAsync();
 
         return _mapper.Map<List<ContactGetDTO>>(contacts);
     }
+
     public async Task<bool> CreateNewContactAsync(Contact newContact)
     {
         try
         {
             _dbContext.Contacts.Add(newContact);
             await _dbContext.SaveChangesAsync();
+
             return await Task.FromResult(true);
         }
         catch(Exception ex)
         {
-            Console.WriteLine($"Exception occured: {ex.ToString()}");
+            Console.WriteLine($"Insert Failed - Exception occured: {ex.ToString()}");
             throw;
         }
-        
+    }
+
+    public async Task<bool> DeleteContactAsync(int contactId)
+    {
+        try
+        {
+            var contact = await _dbContext.Contacts.FirstAsync(x => x.Id == contactId);
+            _dbContext.Remove(contact);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Delete Failed - Exception occured: {ex.ToString()}");
+            throw;
+        }
     }
 }
