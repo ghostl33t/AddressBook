@@ -21,7 +21,7 @@
                                     <td>${contact.email}</td>
                                     <td>${contact.countryName}</td>
                                     <td>${contact.cityName}</td>
-                                    <td>${contact.birthDate}</td>
+                                    <td>${new Date(contact.birthDate).toLocaleDateString('en-US')}</td>
                                     <td>${contact.age}</td>
                                     <td>
                                         <button class="edit-btn" onclick="editContact(${contact.id})">Edit</button>
