@@ -20,7 +20,8 @@ public class Contact
     public string PhoneNumber { get; set; } = string.Empty;
 
     [Required]
-    [Column(TypeName = "bit")]
+    [EnumDataType(typeof(Gender))]
+    [Column(TypeName = "smallint")]
     public Gender Gender { get; set; }
 
     [Required]

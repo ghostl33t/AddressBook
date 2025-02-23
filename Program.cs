@@ -1,8 +1,25 @@
 ﻿using AddressBook.Repositories.ContactRepository;
 using AddressBook.Repositories.CountryRepository;
 using AddressBook.Repositories.CityRepository;
+using Microsoft.EntityFrameworkCore;
+using AddressBook.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    var mainConnectionString = builder.Configuration.GetConnectionString("DBConnection");
+    try
+    {
+        options.UseSqlServer(mainConnectionString);
+        Console.WriteLine($"Connected to the SQL Server!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"DB Connection Error {ex.ToString()}");
+        throw;
+    }
+});
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 

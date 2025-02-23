@@ -35,18 +35,19 @@ public class CityRepository : ICityRepository
     }
     public async Task<City> GetCityByIdAsync(int cityId)
     {
-        var cities = new List<City>
-        {
-            new City { Id = 1, Name = "Belgrade", CountryId = 1 },
-            new City { Id = 2, Name = "Novi Sad", CountryId = 1 },
-            new City { Id = 3, Name = "Zagreb", CountryId = 2 },
-            new City { Id = 4, Name = "Split", CountryId = 2 },
-            new City { Id = 5, Name = "Sarajevo", CountryId = 3 },
-            new City { Id = 6, Name = "Mostar", CountryId = 3 },
-            new City { Id = 7, Name = "Podgorica", CountryId = 4 },
-            new City { Id = 8, Name = "Nikšić", CountryId = 4 }
-        };
+        throw new NotImplementedException();
+        //var cities = new List<City>
+        //{
+        //    new City { Id = 1, Name = "Belgrade", CountryId = 1 },
+        //    new City { Id = 2, Name = "Novi Sad", CountryId = 1 },
+        //    new City { Id = 3, Name = "Zagreb", CountryId = 2 },
+        //    new City { Id = 4, Name = "Split", CountryId = 2 },
+        //    new City { Id = 5, Name = "Sarajevo", CountryId = 3 },
+        //    new City { Id = 6, Name = "Mostar", CountryId = 3 },
+        //    new City { Id = 7, Name = "Podgorica", CountryId = 4 },
+        //    new City { Id = 8, Name = "Nikšić", CountryId = 4 }
+        //};
 
-        return await Task.FromResult(cities.First(city => city.Id == cityId));
+        //return await Task.FromResult(cities.First(city => city.Id == cityId));
     }
 }
